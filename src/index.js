@@ -3,19 +3,23 @@ import ReactDOM from 'react-dom/client';
 import {Routes, Route, BrowserRouter as Router} from 'react-router-dom';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
-import Home from './Pages/home';
+import Interfaces from './Pages/interfaces';
 import NotFound from './Pages/notFound';
+import Sidebar from "./Components/sidebar";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <React.StrictMode>
-        <Router>
-            <Routes>
-                <Route path="/" element={<Home/>}/>
-                <Route path={"/home"} element={<Home/>}/>
-                <Route path="*" element={<NotFound/>}/>
-            </Routes>
-        </Router>
+        <Sidebar/>
+        <div className="ml-64">
+            <Router>
+                <Routes>
+                    <Route path="/" element={<Interfaces/>}/>
+                    <Route path={"/interfaces"} element={<Interfaces/>}/>
+                    <Route path="*" element={<NotFound/>}/>
+                </Routes>
+            </Router>
+        </div>
     </React.StrictMode>
 );
 
