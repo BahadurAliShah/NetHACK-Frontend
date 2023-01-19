@@ -1,44 +1,40 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import Table from "../Components/table";
+import {apiGet} from "../constants/api";
+import {BaseURL, getInterfaces} from "../constants/constants";
 
-let temp = [
-    {
-        id: 1,
-        name: 'Hobby',
-        memory: '4 GB RAM',
-        cpu: '4 CPUs',
-        storage: '128 GB SSD disk',
-        price: '$40',
-        isCurrent: false,
-    },
-    {
-        id: 2,
-        name: 'Startup',
-        memory: '8 GB RAM',
-        cpu: '6 CPUs',
-        storage: '256 GB SSD disk',
-        price: '$80',
-        isCurrent: false,
-    },
-    // More plans...
-]
-
-const header = [
-    "Name", "Memory", "CPU", "Storage", "Price",
-]
 
 export default function Interfaces() {
-    const [plans, setPlans] = useState(temp);
+    const [plans, setPlans] = useState([]);
+    const [header, setHeader] = useState(["Name", "Address", "MacAddress", "IP"]);
 
     const selectorFunction = newID => {
         const Newplans = plans.map(item => {
-            (item.id == newID) ?
+            (item.id === newID) ?
                 item.isCurrent = true :
                 item.isCurrent = false;
             return item;
         })
         setPlans([...Newplans]);
     }
+
+    useEffect( () => {
+       apiGet(BaseURL+getInterfaces, res => {
+           const Interfaces = res.map((item, index) => {
+               return {
+                   id: index,
+                   name: item.Name,
+                   address: item.Address,
+                   macaddress: item.MacAddress,
+                   ip: item.IP
+               }
+           });
+
+           setPlans([...Interfaces]);
+       }, error => {
+           console.log("Error File Fetching Interfaces: ", error);
+       });
+    }, []);
 
     return (
         <div className="p-5">

@@ -8,10 +8,10 @@
  */
 
 export async function apiPost(
-    url: string,
-    body: object,
-    responseSuccess: (res: object) => void,
-    responseError: (error: object) => void,
+    url,
+    body,
+    responseSuccess,
+    responseError,
     requestHeader = {
         'Accept': '*/*',
         'Content-Type': 'application/json'
@@ -23,16 +23,16 @@ export async function apiPost(
         body: JSON.stringify(body)
     })
         .then(errorHandler)
-        .then((response: any) => response.json())
+        .then((response) => response.json())
         .then(json => responseSuccess(json))
         .catch(error => responseError(error));
 }
 
 export async function apiPostFormData(
-    url: string,
-    body: FormData,
-    responseSuccess: (res: object) => void,
-    responseError: (error: object) => void,
+    url,
+    body,
+    responseSuccess,
+    responseError,
     requestHeader = {
         'Content-Type': 'multipart/form-data'
     }
@@ -43,18 +43,18 @@ export async function apiPostFormData(
         body: body
     })
         .then(errorHandler)
-        .then((response: any) => response.json())
+        .then((response) => response.json())
         .then(json => responseSuccess(json))
         .catch(error => responseError(error));
 }
 
-export async function apiGet(url: string, success: (res: object) => void, responseError: (error: object) => void, requestHeader = { 'Content-Type': 'application/json' }) {
+export async function apiGet(url, success, responseError, requestHeader = { 'Content-Type': 'application/json' }) {
     fetch(url, {
         method: 'GET',
         headers: requestHeader
     })
         .then(errorHandler)
-        .then((response: any) => response.json())
+        .then((response) => response.json())
         .then(json => success(json))
         .catch(error => responseError(error));
 }
@@ -64,11 +64,11 @@ export async function apiGet(url: string, success: (res: object) => void, respon
  *
  * @param {errorHandler} response Generic function to handle error occur in api
  */
-const errorHandler = (response: {status: number, statusText: any}) => {
-    if (response.status == 1 || response.status == 200) {
+const errorHandler = (response) => {
+    if (response.status === 1 || response.status === 200) {
         return Promise.resolve(response);
     } else {
-        var error: any = new Error(response.statusText || response.status);
+        var error = new Error(response.statusText || response.status);
         error.response = response;
         return Promise.reject(error);
     }

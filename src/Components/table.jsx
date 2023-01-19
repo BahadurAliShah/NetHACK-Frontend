@@ -20,12 +20,12 @@ export default function Table(props) {
                     <thead>
                     <tr>
                         {props.header.map((title, index) => {
-                            if (index == 0)
-                                return <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">{title}</th>
+                            if (index === 0)
+                                return <th key={"header"+title} scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">{title}</th>
                             else if (index < props.header.length-1)
-                                return <th scope="col" className="hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 lg:table-cell">{title}</th>
+                                return <th key={"header"+title} scope="col" className="hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 lg:table-cell">{title}</th>
                             else
-                                return <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">{title}</th>
+                                return <th key={"header"+title} scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">{title}</th>
                             })
                         }
                         <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-6">
@@ -48,7 +48,7 @@ export default function Table(props) {
                                 </div>
                                 <div className="mt-1 flex flex-col text-gray-500 sm:block lg:hidden">
                                     { props.header.map((title, index) => {
-                                        return index > 0 && index < (props.header.length - 1) ?  <span>{plan[title.toLowerCase()]}. </span>: <></>
+                                        return index > 0 && index < (props.header.length - 1) ?  <span key={"firstCloumn"+title}>{plan[title.toLowerCase()]}. </span>: <></>
                                     })}
                                 </div>
                                 {planIdx !== 0 ? <div className="absolute right-0 left-6 -top-px h-px bg-gray-200" /> : null}
@@ -56,7 +56,7 @@ export default function Table(props) {
                             {props.header.map((title, index) => {
                                 if (index > 0 && index < props.header.length-1)
                                     return (
-                                    <td
+                                    <td key={"columns"+title}
                                         className={classNames(
                                             planIdx === 0 ? '' : 'border-t border-gray-200',
                                             'hidden px-3 py-3.5 text-sm text-gray-500 lg:table-cell'
