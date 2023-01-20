@@ -1,15 +1,12 @@
-import {DocumentChartBarIcon, WifiIcon,} from '@heroicons/react/24/outline'
-
-const navigation = [
-    {name: 'Intefaces', href: '#', icon: WifiIcon, current: true},
-    {name: 'Packets', href: '#', icon: DocumentChartBarIcon, current: false}
-]
+import React, {useEffect} from "react";
+import { Link } from "react-router-dom";
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
 
-export default function Sidebar() {
+export default function Sidebar(props) {
+    useEffect(()=>console.log(props.navigation), [props.navigation])
     return (
         <>
             <div>
@@ -25,12 +22,22 @@ export default function Sidebar() {
                         </div>
                         <div className="flex flex-1 flex-col overflow-y-auto">
                             <nav className="flex-1 space-y-1 px-2 py-4">
-                                {navigation.map((item) => (
-                                    <a
+                                {props.navigation.map((item) => (
+                                    <Link
                                         key={item.name}
-                                        href={item.href}
+                                        to={item.href}
+                                        onClick={(e)=> {
+                                                const updatedNavigation = props.navigation.map(uItem => {
+                                                    (uItem.name === item.name) ? uItem.current = true : uItem.current = false;
+                                                    return uItem;
+                                                });
+                                                props.setNavigation([...updatedNavigation]);
+                                            }
+                                        }
                                         className={classNames(
-                                            item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+                                            item.current
+                                                ? 'bg-gray-900 text-white'
+                                                : 'text-gray-300 hover:bg-gray-700 hover:text-white',
                                             'group flex items-center px-2 py-2 text-sm font-medium rounded-md'
                                         )}
                                     >
@@ -42,7 +49,33 @@ export default function Sidebar() {
                                             aria-hidden="true"
                                         />
                                         {item.name}
-                                    </a>
+                                    </Link>
+                                    // <a
+                                    //     key={item.name}
+                                    //     href={item.href}
+                                    //     // onClick={(e)=> {
+                                    //     //         e.preventDefault();
+                                    //     //         const updatedNavigation = props.navigation.map(uItem => {
+                                    //     //             (uItem.name === item.name) ? uItem.current = true : uItem.current = false;
+                                    //     //             return uItem;
+                                    //     //         });
+                                    //     //         props.setNavigation([...updatedNavigation]);
+                                    //     //     }
+                                    //     // }
+                                    //     className={classNames(
+                                    //         item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+                                    //         'group flex items-center px-2 py-2 text-sm font-medium rounded-md'
+                                    //     )}
+                                    // >
+                                    //     <item.icon
+                                    //         className={classNames(
+                                    //             item.current ? 'text-gray-300' : 'text-gray-400 group-hover:text-gray-300',
+                                    //             'mr-3 flex-shrink-0 h-6 w-6'
+                                    //         )}
+                                    //         aria-hidden="true"
+                                    //     />
+                                    //     {item.name}
+                                    // </a>
                                 ))}
                             </nav>
                         </div>
