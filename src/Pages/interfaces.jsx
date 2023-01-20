@@ -2,38 +2,43 @@ import React, {useState, useEffect} from "react";
 import Table from "../Components/table";
 import {apiGet} from "../constants/api";
 import {BaseURL, getInterfaces} from "../constants/constants";
+import {useSelector, useDispatch} from "react-redux";
+import {setInterfacesAction} from "../Store/Actions/interfacesActions";
+
 
 
 export default function Interfaces() {
-    const [plans, setPlans] = useState([]);
+    const interfaces = useSelector(state => state.interfaces);
+    const dispatch = useDispatch();
     const [header, setHeader] = useState(["Name", "Address", "MacAddress", "IP"]);
 
     const selectorFunction = newID => {
-        const Newplans = plans.map(item => {
+        const newInterfaces = interfaces.map(item => {
             (item.id === newID) ?
                 item.isCurrent = true :
                 item.isCurrent = false;
             return item;
-        })
-        setPlans([...Newplans]);
+        });
+        dispatch(setInterfacesAction(newInterfaces));
     }
 
     useEffect( () => {
-       apiGet(BaseURL+getInterfaces, res => {
-           const Interfaces = res.map((item, index) => {
-               return {
-                   id: index,
-                   name: item.Name,
-                   address: item.Address,
-                   macaddress: item.MacAddress,
-                   ip: item.IP
-               }
-           });
-
-           setPlans([...Interfaces]);
-       }, error => {
-           console.log("Error File Fetching Interfaces: ", error);
-       });
+        if (interfaces.length === 0) {
+            apiGet(BaseURL + getInterfaces, res => {
+                const Interfaces = res.map((item, index) => {
+                    return {
+                        id: index,
+                        name: item.Name,
+                        address: item.Address,
+                        macaddress: item.MacAddress,
+                        ip: item.IP
+                    }
+                });
+                dispatch(setInterfacesAction(Interfaces));
+            }, error => {
+                console.log("Error File Fetching Interfaces: ", error);
+            });
+        }
     }, []);
 
     return (
@@ -45,7 +50,7 @@ export default function Interfaces() {
                     </h2>
                 </div>
             </div>
-            <Table title={"Interfaces"} tableDetail={"Please Select the interface you want to analyze."} data={plans}
+            <Table title={"Interfaces"} tableDetail={"Please Select the interface you want to analyze."} data={interfaces}
                    header={header} selectorFunction={selectorFunction}/>
         </div>
     );
