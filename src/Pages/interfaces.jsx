@@ -51,7 +51,7 @@ export default function Interfaces() {
                 </div>
             </div>
             <Table title={"Interfaces"} tableDetail={"Please Select the interface you want to analyze."} data={interfaces}
-                   header={header} selectorFunction={selectorFunction}/>
+                   header={header} selectorFunction={selectorFunction} selectButtonText={"Select"}/>
         </div>
     );
 }

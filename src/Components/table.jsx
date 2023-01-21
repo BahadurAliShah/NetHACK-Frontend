@@ -14,6 +14,17 @@ export default function Table(props) {
                         {props.tableDetail}
                     </p>
                 </div>
+                {props.addButton &&
+                    <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
+                        <button
+                            type="button"
+                            onClick={props.addButtonFunction}
+                            className="inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto"
+                        >
+                            {props.addButton}
+                        </button>
+                    </div>
+                }
             </div>
             <div className="-mx-4 mt-10 ring-1 ring-gray-300 sm:-mx-6 md:mx-0 md:rounded-lg">
                 <table className="min-w-full divide-y divide-gray-300">
@@ -43,7 +54,7 @@ export default function Table(props) {
                                 )}
                             >
                                 <div className="font-medium text-gray-900">
-                                    {plan.name}
+                                    {plan[props.header[0].toLowerCase()]}
                                     {plan.isCurrent ? <span className="ml-1 text-indigo-600">(Current Interface)</span> : null}
                                 </div>
                                 <div className="mt-1 flex flex-col text-gray-500 sm:block lg:hidden">
@@ -88,7 +99,7 @@ export default function Table(props) {
                                     disabled={plan.isCurrent}
                                     onClick={()=>props.selectorFunction(plan.id)}
                                 >
-                                    Select<span className="sr-only">, {plan[props.header[0].toLowerCase()]}</span>
+                                    {props.selectButtonText}<span className="sr-only">, {plan[props.header[0].toLowerCase()]}</span>
                                 </button>
                                 {planIdx !== 0 ? <div className="absolute right-6 left-0 -top-px h-px bg-gray-200" /> : null}
                             </td>
