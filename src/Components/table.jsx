@@ -46,7 +46,7 @@ export default function Table(props) {
                     </thead>
                     <tbody>
                     {props.data.map((plan, planIdx) => (
-                        <tr key={plan[props.header[0].toLowerCase()]}>
+                        <tr key={planIdx}>
                             <td
                                 className={classNames(
                                     planIdx === 0 ? '' : 'border-t border-transparent',
@@ -59,7 +59,7 @@ export default function Table(props) {
                                 </div>
                                 <div className="mt-1 flex flex-col text-gray-500 sm:block lg:hidden">
                                     { props.header.map((title, index) => {
-                                        return index > 0 && index < (props.header.length - 1) ?  <span key={"firstCloumn"+title}>{plan[title.toLowerCase()]}. </span>: <></>
+                                        return index > 0 && index < (props.header.length - 1) ?  <span key={"firstCloumn"+title+planIdx}>{plan[title.toLowerCase()]}. </span>: <></>
                                     })}
                                 </div>
                                 {planIdx !== 0 ? <div className="absolute right-0 left-6 -top-px h-px bg-gray-200" /> : null}
@@ -67,7 +67,7 @@ export default function Table(props) {
                             {props.header.map((title, index) => {
                                 if (index > 0 && index < props.header.length-1)
                                     return (
-                                    <td key={"columns"+title}
+                                    <td key={"columns"+title+planIdx}
                                         className={classNames(
                                             planIdx === 0 ? '' : 'border-t border-gray-200',
                                             'hidden px-3 py-3.5 text-sm text-gray-500 lg:table-cell'
