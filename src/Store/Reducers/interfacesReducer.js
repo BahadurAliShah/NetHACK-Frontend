@@ -1,16 +1,11 @@
 import {setInterfaces} from "../ActionTypes/actionTypes";
 
-const initialState = {
-    interfaces: []
-};
+const initialState = [];
 
 export const interfacesReducer = (state = initialState, action) => {
     switch (action.type) {
         case setInterfaces:
-            return {
-                ...state,
-                interfaces: action.interfaces
-            };
+            return [...action.interfaces];
         default:
             return state;
     }
