@@ -4,7 +4,7 @@ import {DocumentChartBarIcon, FunnelIcon, WifiIcon} from "@heroicons/react/24/ou
 const initialState = [
     {name: 'Intefaces', href: '/interfaces', icon: WifiIcon, current: true},
     {name: 'Packets', href: '/packets', icon: DocumentChartBarIcon, current: false, subNavigation: [
-            {name: 'Set Filters', icon: FunnelIcon}]}
+            {name: 'Set Filters', icon: FunnelIcon, current: false}]}
 ]
 
 export const sidebarMenuReducer = (state = initialState, action) => {

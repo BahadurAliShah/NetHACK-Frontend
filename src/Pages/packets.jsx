@@ -2,9 +2,11 @@ import React, {useEffect, useRef, useState} from "react";
 import Table from "../Components/table";
 import {BaseURL} from "../constants/constants";
 import socketIO from 'socket.io-client';
-import {useSelector} from "react-redux";
+import {useSelector, useDispatch} from "react-redux";
 import Modal from "../Components/modal";
 import Tabs from "../Components/tabs";
+import SlideOver from "../Components/slideOver";
+import {selectSubMenuItemAction} from "../Store/Actions/sidebarMenuActions";
 
 
 export default function Packets(props) {
@@ -15,6 +17,13 @@ export default function Packets(props) {
     const [modal, setModal] = useState(false);
     const [selectedPacket, setSelectedPacket] = useState(null);
     const [tabs, setTabs] = useState([]);
+    const navigation = useSelector(state => state.navigation);
+    const slider = navigation[1]['subNavigation'][0].current;
+    const dispatch = useDispatch();
+
+    const setSlider = (value) => {
+        dispatch(selectSubMenuItemAction(navigation[1], navigation[1]['subNavigation'][0]));
+    }
 
     var packetsList = [];
     const openPacket = (id) => {
@@ -46,7 +55,7 @@ export default function Packets(props) {
             });
             socket.on("packet", async (data) => {
                 data = JSON.parse(data.data);
-                // console.log("Packet: ", data);
+                console.log("Packet: ", data);
                 var newPacket = [];
                 data.forEach((item, index) => {
                     newPacket.push({
@@ -142,6 +151,21 @@ export default function Packets(props) {
                     </button>
                 </div>
             </Modal>
+
+            <SlideOver open={slider} setOpen={setSlider}>
+                <div className="sm:flex sm:items-start">
+                    <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                        <div className="flex flex-row justify-between">
+                            <div className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
+                                Filter
+                            </div>
+                            <button type={"button"} className={"bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"} name={"filter"} onClick={() => setSlider(false)}>
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </SlideOver>
 
             <Table title={"Packets"} tableDetail={"List of the captured Packets."} data={packets}
                    addButton={sniffing ? "Stop Capturing" : "Start Capturing"} addButtonFunction={startSniffing}
