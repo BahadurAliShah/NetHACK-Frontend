@@ -1,13 +1,14 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useEffect, useState} from "react";
 import Table from "../Components/table";
 import {BaseURL} from "../constants/constants";
 import socketIO from 'socket.io-client';
-import {useSelector, useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import Modal from "../Components/modal";
 import Tabs from "../Components/tabs";
 import SlideOver from "../Components/slideOver";
 import {selectSubMenuItemAction} from "../Store/Actions/sidebarMenuActions";
-
+import {Disclosure} from '@headlessui/react'
+import {MinusIcon, PlusIcon} from '@heroicons/react/20/solid'
 
 export default function Packets(props) {
     const [sniffing, setSniffing] = useState(false);
@@ -20,6 +21,61 @@ export default function Packets(props) {
     const navigation = useSelector(state => state.navigation);
     const slider = navigation[1]['subNavigation'][0].current;
     const dispatch = useDispatch();
+    const [open, setOpen] = useState(false);
+
+    const [filters, setFilters] = useState([
+        {
+            id: 'protocol',
+            name: 'Protocol',
+            type: 'checkbox',
+            options: [
+                {value: 'dns', label: 'DNS', checked: false},
+                {value: 'http', label: 'HTTP', checked: false},
+                {value: 'ftp', label: 'FTP', checked: false},
+                {value: 'smtp', label: 'SMTP', checked: false},
+                {value: 'ssh', label: 'SSH', checked: false},
+                {value: 'arp', label: 'ARP', checked: false},
+                {value: 'telnet', label: 'TELNET', checked: false}
+            ]
+        },
+        {
+            id: 'host',
+            name: "HOST",
+            type: "text",
+            options: [
+                {value: "sourceip", label: 'SourceIP', inputValue: "", checked: false, placeholder: "192.168.0.1"},
+                {
+                    value: "destinationip",
+                    label: 'DestinationIP',
+                    inputValue: "",
+                    checked: false,
+                    placeholder: "192.168.0.1"
+                },
+                {value: "sourceport", label: "Source Port", inputValue: "", checked: false, placeholder: "80"},
+                {
+                    value: "destinationport",
+                    label: "Destination Port",
+                    inputValue: "",
+                    checked: false,
+                    placeholder: "420"
+                },
+                {
+                    value: "sourceaddress",
+                    label: "Source Address",
+                    inputValue: "",
+                    checked: false,
+                    placeholder: "ff:ff:ff:ff:ff"
+                },
+                {
+                    value: "destinationaddress",
+                    label: "Destination Address",
+                    inputValue: "",
+                    checked: false,
+                    placeholder: "ff:ff:ff:ff:ff"
+                },
+            ]
+        }
+    ]);
 
     const setSlider = (value) => {
         dispatch(selectSubMenuItemAction(navigation[1], navigation[1]['subNavigation'][0]));
@@ -152,23 +208,75 @@ export default function Packets(props) {
                 </div>
             </Modal>
 
-            <SlideOver open={slider} setOpen={setSlider}>
-                <div className="sm:flex sm:items-start">
-                    <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
-                        <div className="flex flex-row justify-between">
-                            <div className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
-                                Filter
-                            </div>
-                            <button type={"button"} className={"bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"} name={"filter"} onClick={() => setSlider(false)}>
-                                Close
-                            </button>
-                        </div>
-                    </div>
-                </div>
+            <SlideOver open={slider} setOpen={setSlider} title={"Filters"}>
+                {filters.map((section, sectionIdx) => (
+                    <Disclosure as="div" key={section.id} className="border-t border-gray-200 px-4 py-6">
+                        {({open}) => (
+                            <>
+                                <h3 className="-mx-2 -my-3 flow-root">
+                                    <Disclosure.Button
+                                        className="flex w-full items-center justify-between bg-white px-2 py-3 text-gray-400 hover:text-gray-500">
+                                        <span className="font-medium text-gray-900">{section.name}</span>
+                                        <span className="ml-6 flex items-center">
+                                  {open ? (
+                                      <MinusIcon className="h-5 w-5" aria-hidden="true"/>
+                                  ) : (
+                                      <PlusIcon className="h-5 w-5" aria-hidden="true"/>
+                                  )}
+                                </span>
+                                    </Disclosure.Button>
+                                </h3>
+                                <Disclosure.Panel className="pt-6">
+                                    <div className="space-y-6">
+                                        {section.options.map((option, optionIdx) => (
+                                            <div key={option.value} className="flex items-center">
+                                                <input
+                                                    id={`filter-mobile-${section.id}-${optionIdx}`}
+                                                    name={`${section.id}[]`}
+                                                    defaultValue={option.value}
+                                                    type="checkbox"
+                                                    defaultChecked={option.checked}
+                                                    onChange={(e) => {
+                                                        let newFilters = [...filters];
+                                                        newFilters[sectionIdx].options[optionIdx] = {
+                                                            ...option,
+                                                            checked: !option.checked
+                                                        };
+                                                        setFilters(newFilters);
+                                                    }}
+                                                    className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                                />
+                                                <label
+                                                    htmlFor={`filter-mobile-${section.id}-${optionIdx}`}
+                                                    className="ml-3 min-w-0 flex-1 text-gray-500"
+                                                >
+                                                    {option.label}
+                                                </label>
+                                                {section.type === "text" && option.checked &&
+                                                    <input type={section.type} value={option.inputValue}
+                                                           placeholder={option.placeholder} onChange={(e) => {
+                                                        let newFilters = [...filters];
+                                                        newFilters[sectionIdx].options[optionIdx] = {
+                                                            ...option,
+                                                            inputValue: e.target.value
+                                                        };
+                                                        setFilters(newFilters);
+                                                    }
+                                                    }/>
+                                                }
+                                            </div>
+                                        ))}
+                                    </div>
+                                </Disclosure.Panel>
+                            </>
+                        )}
+                    </Disclosure>
+                ))}
             </SlideOver>
 
             <Table title={"Packets"} tableDetail={"List of the captured Packets."} data={packets}
-                   addButton={sniffing ? "Stop Capturing" : "Start Capturing"} addButtonFunction={startSniffing}
+                   addButton={sniffing ? "Stop Capturing" : "Start Capturing"}
+                   addButtonFunction={startSniffing}
                    header={["HOST", "SourceIP", "DestinationIP", "Protocol", "SourcePort", "DestinationPort"]}
                    selectorFunction={openPacket} selectButtonText={"Open"}/>
         </div>
