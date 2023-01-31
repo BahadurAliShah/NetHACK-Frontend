@@ -7,6 +7,7 @@ import Modal from "../Components/modal";
 import Tabs from "../Components/tabs";
 import SlideOver from "../Components/slideOver";
 import {selectSubMenuItemAction} from "../Store/Actions/sidebarMenuActions";
+import {addFiltersAction, clearFiltersAction} from "../Store/Actions/filterActions";
 import {Disclosure} from '@headlessui/react'
 import {MinusIcon, PlusIcon} from '@heroicons/react/20/solid'
 
@@ -19,63 +20,14 @@ export default function Packets(props) {
     const [selectedPacket, setSelectedPacket] = useState(null);
     const [tabs, setTabs] = useState([]);
     const navigation = useSelector(state => state.navigation);
+    const filters = useSelector(state => state.filters);
     const slider = navigation[1]['subNavigation'][0].current;
     const dispatch = useDispatch();
     const [open, setOpen] = useState(false);
 
-    const [filters, setFilters] = useState([
-        {
-            id: 'protocol',
-            name: 'Protocol',
-            type: 'checkbox',
-            options: [
-                {value: 'dns', label: 'DNS', checked: false},
-                {value: 'http', label: 'HTTP', checked: false},
-                {value: 'ftp', label: 'FTP', checked: false},
-                {value: 'smtp', label: 'SMTP', checked: false},
-                {value: 'ssh', label: 'SSH', checked: false},
-                {value: 'arp', label: 'ARP', checked: false},
-                {value: 'telnet', label: 'TELNET', checked: false}
-            ]
-        },
-        {
-            id: 'host',
-            name: "HOST",
-            type: "text",
-            options: [
-                {value: "sourceip", label: 'SourceIP', inputValue: "", checked: false, placeholder: "192.168.0.1"},
-                {
-                    value: "destinationip",
-                    label: 'DestinationIP',
-                    inputValue: "",
-                    checked: false,
-                    placeholder: "192.168.0.1"
-                },
-                {value: "sourceport", label: "Source Port", inputValue: "", checked: false, placeholder: "80"},
-                {
-                    value: "destinationport",
-                    label: "Destination Port",
-                    inputValue: "",
-                    checked: false,
-                    placeholder: "420"
-                },
-                {
-                    value: "sourceaddress",
-                    label: "Source Address",
-                    inputValue: "",
-                    checked: false,
-                    placeholder: "ff:ff:ff:ff:ff"
-                },
-                {
-                    value: "destinationaddress",
-                    label: "Destination Address",
-                    inputValue: "",
-                    checked: false,
-                    placeholder: "ff:ff:ff:ff:ff"
-                },
-            ]
-        }
-    ]);
+    const setFilters = (filters) => {
+        dispatch(addFiltersAction(filters));
+    }
 
     const setSlider = (value) => {
         dispatch(selectSubMenuItemAction(navigation[1], navigation[1]['subNavigation'][0]));
@@ -110,8 +62,8 @@ export default function Packets(props) {
                 }
             });
             socket.on("packet", async (data) => {
-                data = JSON.parse(data.data);
                 console.log("Packet: ", data);
+                data = JSON.parse(data.data);
                 var newPacket = [];
                 data.forEach((item, index) => {
                     newPacket.push({
@@ -235,7 +187,7 @@ export default function Packets(props) {
                                                     name={`${section.id}[]`}
                                                     defaultValue={option.value}
                                                     type="checkbox"
-                                                    defaultChecked={option.checked}
+                                                    checked={option.checked}
                                                     onChange={(e) => {
                                                         let newFilters = [...filters];
                                                         newFilters[sectionIdx].options[optionIdx] = {
@@ -272,6 +224,24 @@ export default function Packets(props) {
                         )}
                     </Disclosure>
                 ))}
+                <div className={"flex flex-row justify-between"}>
+                    <button
+                        type="button"
+                        className="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-3 py-2 text-sm font-medium leading-4 text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                    >
+                        Apply Filters
+                    </button>
+
+                    <button
+                        type="button"
+                        onClick={() => {
+                            dispatch(clearFiltersAction())
+                        }}
+                        className="inline-flex items-center rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                    >
+                        Reset
+                    </button>
+                </div>
             </SlideOver>
 
             <Table title={"Packets"} tableDetail={"List of the captured Packets."} data={packets}
