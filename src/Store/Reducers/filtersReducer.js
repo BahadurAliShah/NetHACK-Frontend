@@ -12,7 +12,8 @@ const initialState = [
             {value: 'smtp', label: 'SMTP', checked: false},
             {value: 'ssh', label: 'SSH', checked: false},
             {value: 'arp', label: 'ARP', checked: false},
-            {value: 'telnet', label: 'TELNET', checked: false}
+            {value: 'telnet', label: 'TELNET', checked: false},
+            {value: 'other', label: 'Other', checked: false}
         ]
     },
     {

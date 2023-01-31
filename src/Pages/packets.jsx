@@ -29,6 +29,20 @@ export default function Packets(props) {
         dispatch(addFiltersAction(filters));
     }
 
+    const sendFilters = (clear) => {
+        const newSocket = socketIO(BaseURL);
+        console.log('Applying filters');
+        if (clear) {
+            dispatch(clearFiltersAction());
+            newSocket.emit('clearFilters');
+        } else
+            newSocket.emit('setFilters', filters);
+
+        setTimeout(() => {
+            newSocket.disconnect();
+        }, 1000);
+    }
+
     const setSlider = (value) => {
         dispatch(selectSubMenuItemAction(navigation[1], navigation[1]['subNavigation'][0]));
     }
@@ -227,6 +241,11 @@ export default function Packets(props) {
                 <div className={"flex flex-row justify-between"}>
                     <button
                         type="button"
+                        onClick={() => {
+                            sendFilters(false);
+                            setSlider(false);
+                        }
+                        }
                         className="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-3 py-2 text-sm font-medium leading-4 text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                     >
                         Apply Filters
@@ -235,7 +254,8 @@ export default function Packets(props) {
                     <button
                         type="button"
                         onClick={() => {
-                            dispatch(clearFiltersAction())
+                            sendFilters(true);
+                            setSlider(false);
                         }}
                         className="inline-flex items-center rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                     >
