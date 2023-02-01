@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import Table from "../Components/table";
 import {BaseURL} from "../constants/constants";
 import socketIO from 'socket.io-client';
@@ -13,18 +13,18 @@ import {MinusIcon, PlusIcon} from '@heroicons/react/20/solid'
 import Header from "../Components/header";
 
 export default function Packets(props) {
-    const [sniffing, setSniffing] = useState(false);
-    const interfaces = useSelector(state => state.interfaces);
-    const [socket, setSocket] = useState(null);
-    const [packets, setPackets] = useState([]);
     const [modal, setModal] = useState(false);
     const [selectedPacket, setSelectedPacket] = useState(null);
     const [tabs, setTabs] = useState([]);
+
     const navigation = useSelector(state => state.navigation);
     const filters = useSelector(state => state.filters);
-    const slider = navigation[1]['subNavigation'][0].current;
+    const packets = useSelector(state => state.packets.packets);
+
     const dispatch = useDispatch();
-    const [open, setOpen] = useState(false);
+
+    const slider = navigation[1]['subNavigation'][0].current;
+
 
     const setFilters = (filters) => {
         dispatch(addFiltersAction(filters));
@@ -48,7 +48,6 @@ export default function Packets(props) {
         dispatch(selectSubMenuItemAction(navigation[1], navigation[1]['subNavigation'][0]));
     }
 
-    var packetsList = [];
     const openPacket = (id) => {
 
         setTabs(packets[id].packet['Frame_info']['Frame_protocols'].map((item, index) => {
@@ -60,70 +59,6 @@ export default function Packets(props) {
         }));
         setSelectedPacket(id);
         setModal(true);
-    }
-
-    useEffect(() => {
-        if (socket !== null) {
-            socket.on("connect", () => {
-                console.log("Socket Connected");
-            });
-            socket.on("sniffing", (data) => {
-                console.log("Sniffing: ", data);
-                if (data["status"] === "success") {
-                    setSniffing(true);
-                } else {
-                    setSniffing(false);
-                    console.log("Error Sniffing: ", data["error"]);
-                }
-            });
-            socket.on("packet", async (data) => {
-                console.log("Packet: ", data);
-                data = JSON.parse(data.data);
-                var newPacket = [];
-                data.forEach((item, index) => {
-                    newPacket.push({
-                        id: packets.length + index,
-                        host: item['Ethernet']['src'],
-                        sourceip: item['IP'] ? item['IP']['src'] : item['IPv6'] ? item['IPv6']['src'] : "Unknown",
-                        destinationip: item['IP'] ? item['IP']['dst'] : item['IPv6'] ? item['IPv6']['dst'] : "Unknown",
-                        sourceport: item['TCP'] ? item['TCP']['sport'] : item['UDP'] ? item['UDP']['sport'] : item['ICMP'] ? item['ICMP']['type'] : "N/A",
-                        destinationport: item['TCP'] ? item['TCP']['dport'] : item['UDP'] ? item['UDP']['dport'] : item['ICMP'] ? item['ICMP']['type'] : "N/A",
-                        protocol: item['Frame_info']['Frame_protocols'] && item['Frame_info']['Frame_protocols'][3],
-                        packet: item
-                    });
-                });
-                // console.log("New Packetaaaaaaaa: ", newPacket.length, packets.length);
-                packetsList = packetsList.concat(newPacket);
-                // console.log("New Packet Lenght: ", packets.length, packetsList.length);
-                setPackets(packetsList);
-            });
-            socket.on("disconnect", () => {
-                console.log("Socket Disconnected");
-            });
-        }
-    }, [socket]);
-    //
-    // useEffect(() => {
-    //     console.log("__________________________", packets);
-    // }, [packets]);
-
-    const startSniffing = () => {
-        const currentInterface = interfaces.filter(item => item.isCurrent === true);
-        if (currentInterface.length === 0) {
-            alert("Please Select an Interface First");
-            return;
-        }
-        if (sniffing) {
-            socket.emit("stop_sniffing");
-            setSniffing(false);
-            socket.disconnect();
-            setSocket(null);
-        } else {
-            const newSocket = socketIO(BaseURL);
-            setSocket(newSocket);
-            setSniffing(true);
-            newSocket.emit("start_sniffing", {"interface": currentInterface[0].name});
-        }
     }
 
 
@@ -261,8 +196,6 @@ export default function Packets(props) {
             </SlideOver>
 
             <Table title={"Packets"} tableDetail={"List of the captured Packets."} data={packets}
-                   addButton={sniffing ? "Stop Capturing" : "Start Capturing"}
-                   addButtonFunction={startSniffing}
                    header={["HOST", "SourceIP", "DestinationIP", "Protocol", "SourcePort", "DestinationPort"]}
                    selectorFunction={openPacket} selectButtonText={"Open"}/>
         </div>
