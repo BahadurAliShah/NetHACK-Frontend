@@ -4,6 +4,7 @@ import {apiGet} from "../constants/api";
 import {BaseURL, getInterfaces} from "../constants/constants";
 import {useSelector, useDispatch} from "react-redux";
 import {setInterfacesAction} from "../Store/Actions/interfacesActions";
+import Header from "../Components/header";
 
 
 
@@ -43,13 +44,10 @@ export default function Interfaces() {
 
     return (
         <div className="p-5">
-            <div className="md:flex md:items-center md:justify-between mb-12">
-                <div className="min-w-0 flex-1">
-                    <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
-                        Interfaces
-                    </h2>
-                </div>
+            <div className="mb-12">
+                <Header pageTitle={"Interfaces Page"}/>
             </div>
+
             <Table title={"Interfaces"} tableDetail={"Please Select the interface you want to analyze."} data={interfaces}
                    header={header} selectorFunction={selectorFunction} selectButtonText={"Select"}/>
         </div>

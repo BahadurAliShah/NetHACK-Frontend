@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {VictoryArea, VictoryStack} from "victory";
+import Header from "../Components/header";
 
 const directory = [
     {
@@ -166,12 +167,8 @@ const Speed = () => {
 
     return (
         <div className="p-5 ">
-            <div className="md:flex md:items-center md:justify-between mb-12">
-                <div className="min-w-0 flex-1">
-                    <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
-                        Speed
-                    </h2>
-                </div>
+            <div className="mb-12">
+                <Header pageTitle={"Speed Page"}/>
             </div>
 
             <div className="flex flex-row">
@@ -286,8 +283,7 @@ const Speed = () => {
                 </div>
             </div>
         </div>
-    )
-        ;
+    );
 }
 
 export default Speed;

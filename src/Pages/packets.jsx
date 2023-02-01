@@ -10,6 +10,7 @@ import {selectSubMenuItemAction} from "../Store/Actions/sidebarMenuActions";
 import {addFiltersAction, clearFiltersAction} from "../Store/Actions/filterActions";
 import {Disclosure} from '@headlessui/react'
 import {MinusIcon, PlusIcon} from '@heroicons/react/20/solid'
+import Header from "../Components/header";
 
 export default function Packets(props) {
     const [sniffing, setSniffing] = useState(false);
@@ -128,14 +129,9 @@ export default function Packets(props) {
 
     return (
         <div className="p-5">
-            <div className="md:flex md:items-center md:justify-between mb-12">
-                <div className="min-w-0 flex-1">
-                    <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
-                        Packets
-                    </h2>
-                </div>
+            <div className="mb-12">
+                <Header pageTitle={"Packets Page"}/>
             </div>
-
             <Modal open={modal} setOpen={setModal}>
                 <div className="sm:flex sm:items-start">
                     <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
