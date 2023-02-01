@@ -7,3 +7,6 @@ export const addFilters = 'ADD_FILTERS';
 export const editFilters = 'EDIT_FILTERS';
 export const clearFilters = 'CLEAR_FILTERS';
 
+export const startSniffing = 'START_SNIFFING';
+export const stopSniffing = 'STOP_SNIFFING';
+
