@@ -45,7 +45,16 @@ export default function Header(props) {
             });
 
         } else {
-            sniffer.socket.disconnect();
+            sniffer.socket.emit("stop_sniffing");
+            sniffer.socket.on("stoped_sniffing", (data) => {
+                console.log("Stoped Sniffing: ", data);
+                if (data["status"] === "success") {
+                    sniffer.socket.disconnect();
+                    dispatch(stopSniffingAction());
+                } else {
+                    console.log("Error Stoping Sniffing: ", data["error"]);
+                }
+            });
         }
     }
 
