@@ -3,17 +3,38 @@ import {useSelector, useDispatch} from 'react-redux'
 import {startSniffingAction, stopSniffingAction} from "../Store/Actions/snifferActions";
 import {BaseURL} from "../constants/constants";
 import socketIO from 'socket.io-client';
+import { addPacketAction, setAverageSpeedAction, setDevicesAction, setInstantaneousSpeedAction } from "../Store/Actions/packetsActions";
 
 
 export default function Header(props) {
     const sniffer = useSelector(state => state.sniffer);
     const interfaces = useSelector(state => state.interfaces);
+    const packets = useSelector(state => state.packets);
+    // console.log(packets.packets.length);
     const dispatch = useDispatch();
 
     useEffect(() => {
         if (sniffer.socket !== null) {
-            sniffer.socket.on("packet", async (data) => {
-                console.log("Packet: ", data);
+            sniffer.socket.on("packet", async (res) => {
+                var data = JSON.parse(res.data);
+                var newPackets = [];
+                data.forEach((item, index) => {
+                    newPackets.push({
+                        id: packets.packets.length + index,
+                        host: item['Ethernet']['src'],
+                        sourceip: item['IP'] ? item['IP']['src'] : item['IPv6'] ? item['IPv6']['src'] : "Unknown",
+                        destinationip: item['IP'] ? item['IP']['dst'] : item['IPv6'] ? item['IPv6']['dst'] : "Unknown",
+                        sourceport: item['TCP'] ? item['TCP']['sport'] : item['UDP'] ? item['UDP']['sport'] : item['ICMP'] ? item['ICMP']['type'] : "N/A",
+                        destinationport: item['TCP'] ? item['TCP']['dport'] : item['UDP'] ? item['UDP']['dport'] : item['ICMP'] ? item['ICMP']['type'] : "N/A",
+                        protocol: item['Frame_info']['Frame_protocols'] && item['Frame_info']['Frame_protocols'][3],
+                        packet: item
+                    });
+                });
+                dispatch(addPacketAction(newPackets));
+
+                dispatch(setDevicesAction(res['Devices']));
+                dispatch(setInstantaneousSpeedAction(res['InstantaneousSPEED']));
+                dispatch(setAverageSpeedAction(res['AvgSpeed']));
             });
             sniffer.socket.on("disconnect", () => {
                 console.log("Socket Disconnected");
