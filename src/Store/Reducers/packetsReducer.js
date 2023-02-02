@@ -27,9 +27,9 @@ const addData = (data, newValue) => {
     } else {
         for (let i = 0; i < data.length; i++) {
             if (i === data.length - 1) {
-                data[i].y = newValue;
+                data[i] = {...data[i], y: newValue};
             } else {
-                data[i].y = data[i + 1].y;
+                data[i] = {...data[i], y: data[i + 1].y};
             }
         }
     }

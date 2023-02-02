@@ -103,6 +103,7 @@ const VictoryAreaChart = (props) => {
         width={props.width}
         height={props.height}
         padding={{top: 1, bottom: 0, left: 0, right: 0}}
+        maxDomain={{y: 10000}}
     >
         <VictoryArea
             data={props.data1}
@@ -159,7 +160,7 @@ const Speed = () => {
     }
 
     const printData = (data) => {
-        return data.map((item) => item.y === null ? 0 : item.y);
+        return data.map((item) => item.y === null ? 0 : item.y/10);
     }
 
     const handleResize = () => {
@@ -177,10 +178,6 @@ const Speed = () => {
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
     }, []);
-
-    useEffect(() => {
-        console.log("selectedDevice", selectedDevice);
-    }, [selectedDevice]);
 
     return (
         <div className="p-5 ">
@@ -241,14 +238,14 @@ const Speed = () => {
                                         className={"text-gray-900 whitespace-nowrap py-1 px-2 border-l-2 border-dashed font-medium text-sm"}
                                         style={{borderColor: "rgb(47,255,0)"}}>
                                         <p className={"text-gray-700 font-small"}>Send</p>
-                                        <p className={"text-gray-900 text-2xl"}>{(averageSpeed[selectedDevice]['avgSSpeed'] / 1000).toFixed(3)} Kbps</p>
+                                        <p className={"text-gray-900 text-2xl"}>{(instantaneousSpeed[selectedDevice].send[59].y / 1000).toFixed(3)} Kbps</p>
                                     </div>
 
                                     <div
                                         className={"text-gray-900 whitespace-nowrap mt-2 py-1 px-2 border-l-2 font-medium text-sm"}
                                         style={{borderColor: "rgb(255,221,0)"}}>
                                         <p className={"text-gray-700 font-small"}>Receive</p>
-                                        <p className={"text-gray-900 text-2xl"}>{(averageSpeed[selectedDevice]['avgRSpeed'] / 1000).toFixed(3)} Kbps</p>
+                                        <p className={"text-gray-900 text-2xl"}>{(instantaneousSpeed[selectedDevice].receive[59].y / 1000).toFixed(3)} Kbps</p>
                                     </div>
                                 </div>
 
@@ -264,6 +261,30 @@ const Speed = () => {
                                     <div className={"flex flex-row"}>
                                         <p className={"text-gray-500"}>Connected to:</p>&nbsp;&nbsp;
                                         <p>{devices[selectedDevice]['Connected to']}</p>
+                                    </div>
+                                    <div className={"flex flex-row"}>
+                                        <p className={"text-gray-500"}>Sent Bytes:</p>&nbsp;&nbsp;
+                                        <p>{averageSpeed[selectedDevice]['SBytes']}</p>
+                                    </div>
+                                    <div className={"flex flex-row"}>
+                                        <p className={"text-gray-500"}>Received Bytes:</p>&nbsp;&nbsp;
+                                        <p>{averageSpeed[selectedDevice]['RBytes']}</p>
+                                    </div>
+                                    <div className={"flex flex-row"}>
+                                        <p className={"text-gray-500"}>Sent Packets:</p>&nbsp;&nbsp;
+                                        <p>{averageSpeed[selectedDevice]['sentPackets']}</p>
+                                    </div>
+                                    <div className={"flex flex-row"}>
+                                        <p className={"text-gray-500"}>Recieved Packets:</p>&nbsp;&nbsp;
+                                        <p>{averageSpeed[selectedDevice]['receivedPackets']}</p>
+                                    </div>
+                                    <div className={"flex flex-row"}>
+                                        <p className={"text-gray-500"}>Average Upload Speed:</p>&nbsp;&nbsp;
+                                        <p>{(averageSpeed[selectedDevice]['avgSSpeed'] / 1000).toFixed(3)}</p>
+                                    </div>
+                                    <div className={"flex flex-row"}>
+                                        <p className={"text-gray-500"}>Average Download Speed:</p>&nbsp;&nbsp;
+                                        <p>{(averageSpeed[selectedDevice]['avgRSpeed'] / 1000).toFixed(3)}</p>
                                     </div>
                                 </div>
                             </div>
