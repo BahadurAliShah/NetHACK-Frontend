@@ -3,7 +3,7 @@ import {useSelector, useDispatch} from 'react-redux'
 import {startSniffingAction, stopSniffingAction} from "../Store/Actions/snifferActions";
 import {BaseURL} from "../constants/constants";
 import socketIO from 'socket.io-client';
-import { addPacketAction, setAverageSpeedAction, setDevicesAction, setInstantaneousSpeedAction } from "../Store/Actions/packetsActions";
+import { setTotalPacketsAction ,addPacketAction, setAverageSpeedAction, setDevicesAction, setInstantaneousSpeedAction, setAnalyzedDataAction } from "../Store/Actions/packetsActions";
 
 
 export default function Header(props) {
@@ -30,11 +30,12 @@ export default function Header(props) {
                         packet: item
                     });
                 });
+                dispatch(setTotalPacketsAction(res['TotalPackets']));
                 dispatch(addPacketAction(newPackets));
-
                 dispatch(setDevicesAction(res['Devices']));
                 dispatch(setInstantaneousSpeedAction(res['InstantaneousSPEED']));
                 dispatch(setAverageSpeedAction(res['AvgSpeed']));
+                dispatch(setAnalyzedDataAction(res['AnalyzedData']));
             });
             sniffer.socket.on("disconnect", () => {
                 console.log("Socket Disconnected");

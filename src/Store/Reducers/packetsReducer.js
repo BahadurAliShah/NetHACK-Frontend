@@ -1,18 +1,22 @@
 import {
+    setTotalPackets,
     addPacket,
     clearPackets,
     setPacketsPage,
     setDevices,
     setInstantaneousSpeed,
-    setAverageSpeed
+    setAverageSpeed,
+    setAnalyzedData
 } from "../ActionTypes/actionTypes";
 
 const initialState = {
+    totalPacketsCount: 0,
     packets: [],
     page: 1,
     devices: [],
     instantaneousSpeed: [],
-    averageSpeed: []
+    averageSpeed: [],
+    analyzedData: []
 }
 
 const addData = (data, newValue) => {
@@ -101,6 +105,8 @@ const SampleData = [
 
 export const packetsReducer = (state = initialState, action) => {
     switch (action.type) {
+        case setTotalPackets:
+            return {...state, totalPacketsCount: action.totalPackets};
         case addPacket:
             return {...state, packets: [...state.packets, ...action.packets]};
         case clearPackets:
@@ -133,6 +139,8 @@ export const packetsReducer = (state = initialState, action) => {
             return {...state, instantaneousSpeed: newInstantaneousSpeed};
         case setAverageSpeed:
             return {...state, averageSpeed: action.averageSpeed};
+        case setAnalyzedData:
+            return {...state, analyzedData: action.analyzedData};
         default:
             return state;
     }

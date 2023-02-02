@@ -1,4 +1,11 @@
-import {addPacket, clearPackets, setPacketsPage, setDevices, setInstantaneousSpeed, setAverageSpeed} from "../ActionTypes/actionTypes";
+import {setTotalPackets, addPacket, clearPackets, setPacketsPage, setDevices, setInstantaneousSpeed, setAverageSpeed, setAnalyzedData} from "../ActionTypes/actionTypes";
+
+export const setTotalPacketsAction = (totalPackets) => {
+    return {
+        type: setTotalPackets,
+        totalPackets: totalPackets
+    }
+}
 
 export const addPacketAction = (packets) => {
     return {
@@ -38,5 +45,12 @@ export const setAverageSpeedAction = (speed) => {
     return {
         type: setAverageSpeed,
         averageSpeed: speed
+    }
+}
+
+export const setAnalyzedDataAction = (data) => {
+    return {
+        type: setAnalyzedData,
+        analyzedData: data
     }
 }
