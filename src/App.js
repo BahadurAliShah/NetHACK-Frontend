@@ -6,6 +6,7 @@ import NotFound from './Pages/notFound';
 import Sidebar from "./Components/sidebar";
 import Packets from "./Pages/packets";
 import Speed from "./Pages/speed";
+import Analyzer from "./Pages/analyzer";
 import {useDispatch, useSelector} from "react-redux";
 import {selectMenuItemAction, selectSubMenuItemAction} from "./Store/Actions/sidebarMenuActions";
 
@@ -20,6 +21,7 @@ export default function App() {
                         <Route path={"/interfaces"} element={<Interfaces/>}/>
                         <Route path={"/packets"} element={<Packets/>}/>
                         <Route path={"/speed"} element={<Speed/>}/>
+                        <Route path={"/analyzer"} element={<Analyzer/>}/>
                         <Route path="*" element={<NotFound/>}/>
                     </Routes>
                 </div>

@@ -1,11 +1,12 @@
 import {selectMenuItem, selectSubMenuItem} from '../ActionTypes/actionTypes';
-import {DocumentChartBarIcon, FunnelIcon, WifiIcon, ClockIcon } from "@heroicons/react/24/outline";
+import {DocumentChartBarIcon, FunnelIcon, WifiIcon, ClockIcon, PuzzlePieceIcon } from "@heroicons/react/24/outline";
 
 const initialState = [
     {name: 'Intefaces', href: '/interfaces', icon: WifiIcon, current: true},
     {name: 'Packets', href: '/packets', icon: DocumentChartBarIcon, current: false, subNavigation: [
             {name: 'Set Filters', icon: FunnelIcon, current: false}]},
-    {name: 'Speed', href: '/speed', icon: ClockIcon, current: false}
+    {name: 'Speed', href: '/speed', icon: ClockIcon, current: false},
+    {name: 'Analyzer', href: '/analyzer', icon: PuzzlePieceIcon, current: false}
 ]
 
 export const sidebarMenuReducer = (state = initialState, action) => {
