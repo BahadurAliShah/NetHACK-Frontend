@@ -10,6 +10,7 @@ export const clearFilters = 'CLEAR_FILTERS';
 export const startSniffing = 'START_SNIFFING';
 export const stopSniffing = 'STOP_SNIFFING';
 
+export const setPacketsPerPage = 'SET_PACKETS_PER_PAGE';
 export const setTotalPackets = 'SET_TOTAL_PACKETS';
 export const addPacket = 'ADD_PACKET';
 export const clearPackets = 'CLEAR_PACKETS';

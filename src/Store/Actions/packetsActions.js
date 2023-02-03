@@ -1,4 +1,11 @@
-import {setTotalPackets, addPacket, clearPackets, setPacketsPage, setDevices, setInstantaneousSpeed, setAverageSpeed, setAnalyzedData} from "../ActionTypes/actionTypes";
+import {setPacketsPerPage, setTotalPackets, addPacket, clearPackets, setPacketsPage, setDevices, setInstantaneousSpeed, setAverageSpeed, setAnalyzedData} from "../ActionTypes/actionTypes";
+
+export const setPacketsPerPageAction = (noOfPackets) => {
+    return {
+        type: setPacketsPerPage,
+        packetsPerPage: noOfPackets
+    }
+}
 
 export const setTotalPacketsAction = (totalPackets) => {
     return {

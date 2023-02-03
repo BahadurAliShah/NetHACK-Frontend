@@ -11,6 +11,7 @@ import {addFiltersAction, clearFiltersAction} from "../Store/Actions/filterActio
 import {Disclosure} from '@headlessui/react'
 import {MinusIcon, PlusIcon} from '@heroicons/react/20/solid'
 import Header from "../Components/header";
+import Pagination from "../Components/pagination";
 
 export default function Packets(props) {
     const [modal, setModal] = useState(false);
@@ -20,7 +21,6 @@ export default function Packets(props) {
     const navigation = useSelector(state => state.navigation);
     const filters = useSelector(state => state.filters);
     const packets = useSelector(state => state.packets.packets);
-
     const dispatch = useDispatch();
 
     const slider = navigation[1]['subNavigation'][0].current;
@@ -197,7 +197,9 @@ export default function Packets(props) {
 
             <Table title={"Packets"} tableDetail={"List of the captured Packets."} data={packets}
                    header={["HOST", "SourceIP", "DestinationIP", "Protocol", "SourcePort", "DestinationPort"]}
-                   selectorFunction={openPacket} selectButtonText={"Open"}/>
+                   selectorFunction={openPacket} selectButtonText={"Open"} rowsPerPage={true} />
+
+            <Pagination />
         </div>
     )
 }

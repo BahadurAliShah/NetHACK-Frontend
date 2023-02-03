@@ -1,4 +1,5 @@
 import {
+    setPacketsPerPage,
     setTotalPackets,
     addPacket,
     clearPackets,
@@ -11,8 +12,9 @@ import {
 
 const initialState = {
     totalPacketsCount: 0,
+    packetsPerPage: 200,
     packets: [],
-    page: 1,
+    page: 0,
     devices: [],
     instantaneousSpeed: [],
     averageSpeed: [],
@@ -105,10 +107,19 @@ const SampleData = [
 
 export const packetsReducer = (state = initialState, action) => {
     switch (action.type) {
+        case setPacketsPerPage:
+            return {...state, packetsPerPage: action.packetsPerPage};
         case setTotalPackets:
             return {...state, totalPacketsCount: action.totalPackets};
         case addPacket:
-            return {...state, packets: [...state.packets, ...action.packets]};
+            if (state.packets.length === state.packetsPerPage) {
+                return state;
+            }
+            let temp = [...state.packets, ...action.packets];
+            if (temp.length > state.packetsPerPage) {
+                temp.splice(-1 * (temp.length - state.packetsPerPage), temp.length - state.packetsPerPage);
+            }
+            return {...state, packets: [...temp]};
         case clearPackets:
             return {...state, packets: []};
         case setPacketsPage:
