@@ -22,21 +22,11 @@ const initialState = {
 }
 
 const addData = (data, newValue) => {
-    let nullArray = false;
     for (let i = 0; i < data.length; i++) {
-        if (data[i].y === null) {
-            nullArray = i;
-        }
-    }
-    if (nullArray !== false) {
-        data[nullArray] = {...data[nullArray], y: newValue};
-    } else {
-        for (let i = 0; i < data.length; i++) {
-            if (i === data.length - 1) {
-                data[i] = {...data[i], y: newValue};
-            } else {
-                data[i] = {...data[i], y: data[i + 1].y};
-            }
+        if (i === data.length - 1) {
+            data[i] = {...data[i], y: newValue};
+        } else {
+            data[i] = {...data[i], y: data[i + 1].y};
         }
     }
     return [...data];
