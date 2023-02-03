@@ -1,7 +1,7 @@
 import React, {useEffect} from "react";
 import {ChevronLeftIcon, ChevronRightIcon} from '@heroicons/react/20/solid'
 import {useDispatch, useSelector} from "react-redux";
-import {addPacketAction, clearPacketsAction} from "../Store/Actions/packetsActions";
+import {addPacketAction, clearPacketsAction, setPacketsPageAction} from "../Store/Actions/packetsActions";
 import {BaseURL, getPackets} from "../constants/constants";
 import socketIO from 'socket.io-client';
 
@@ -40,6 +40,7 @@ export default function Pagination() {
                             newSocket.on('pagination_packets', (res) => {
                                 dispatch(clearPacketsAction());
                                 dispatch(addPacketAction(res['PaginationPackets'], 0))
+                                dispatch(setPacketsPageAction(page));
                                 newSocket.disconnect();
                             });
                         }
