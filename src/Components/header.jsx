@@ -17,9 +17,9 @@ export default function Header(props) {
         if (sniffer.socket !== null) {
             sniffer.socket.on("packet", async (res) => {
                 var data = JSON.parse(res.data);
-                dispatch(addPacketAction(data));
+                // console.log(data);
                 dispatch(setTotalPacketsAction(res['TotalPackets']));
-                dispatch(addPacketAction(data));
+                dispatch(addPacketAction(data, packets.packets.length));
                 dispatch(setDevicesAction(res['Devices']));
                 dispatch(setInstantaneousSpeedAction(res['InstantaneousSPEED']));
                 dispatch(setAverageSpeedAction(res['AvgSpeed']));
