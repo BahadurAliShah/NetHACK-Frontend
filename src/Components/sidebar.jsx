@@ -14,7 +14,7 @@ export default function Sidebar() {
     return (
         <>
             <div>
-                <div className="hidden md:fixed md:inset-y-0 md:flex md:w-64 md:flex-col">
+                <div className="sm:fixed sm:inset-y-0 sm:flex sm:w-64 sm:flex-col">
                     {/* Sidebar component, swap this element with another sidebar if you like */}
                     <div className="flex min-h-0 flex-1 flex-col bg-gray-800">
                         <div className="flex h-16 flex-shrink-0 items-center bg-gray-900 px-4">
