@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import Table from "../Components/table";
-import {BaseURL} from "../constants/constants";
+import {BaseURL, getPackets} from "../constants/constants";
 import socketIO from 'socket.io-client';
 import {useDispatch, useSelector} from "react-redux";
 import Modal from "../Components/modal";
@@ -8,6 +8,7 @@ import Tabs from "../Components/tabs";
 import SlideOver from "../Components/slideOver";
 import {selectSubMenuItemAction} from "../Store/Actions/sidebarMenuActions";
 import {addFiltersAction, clearFiltersAction} from "../Store/Actions/filterActions";
+import {addPacketAction, clearPacketsAction, setPacketsPageAction} from "../Store/Actions/packetsActions";
 import {Disclosure} from '@headlessui/react'
 import {MinusIcon, PlusIcon} from '@heroicons/react/20/solid'
 import Header from "../Components/header";
@@ -21,6 +22,7 @@ export default function Packets(props) {
     const navigation = useSelector(state => state.navigation);
     const filters = useSelector(state => state.filters);
     const packets = useSelector(state => state.packets.packets);
+    const packetsPerPage = useSelector(state => state.packets.packetsPerPage);
     const dispatch = useDispatch();
 
     const slider = navigation[1]['subNavigation'][0].current;
@@ -38,10 +40,39 @@ export default function Packets(props) {
             newSocket.emit('clearFilters');
         } else
             newSocket.emit('setFilters', filters);
-
-        setTimeout(() => {
-            newSocket.disconnect();
-        }, 1000);
+        newSocket.on('Filters', (res) => {
+            dispatch(setPacketsPageAction(0));
+            const url = BaseURL + getPackets;
+            const body = {
+                "page": 0,
+                "size": packetsPerPage
+            };
+            fetch(url,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(body)
+                }).then(
+                response => {
+                    if (response.status === 200) {
+                        response.json().then(res => {
+                            if (res.status === 'success') {
+                                const newSocket = new socketIO(BaseURL);
+                                newSocket.emit('get_pagination_packets');
+                                newSocket.on('pagination_packets', (res) => {
+                                    console.log("------------------", res);
+                                    dispatch(clearPacketsAction());
+                                    dispatch(addPacketAction(res['PaginationPackets'], 0));
+                                    newSocket.disconnect();
+                                });
+                            }
+                        });
+                    }
+                }
+            );
+        });
     }
 
     const setSlider = (value) => {
