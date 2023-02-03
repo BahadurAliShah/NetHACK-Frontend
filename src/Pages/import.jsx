@@ -92,6 +92,7 @@ export default function Import() {
                                                             dispatch(addPacketAction(res['PaginationPackets']), 0)
                                                             newSocket.disconnect();
                                                             alert('File uploaded successfully');
+                                                            setFile(null);
                                                         });
                                                     }
                                                 });
