@@ -1,11 +1,25 @@
 import React, {useState} from 'react';
-import {BaseURL} from "../constants/constants";
+import {BaseURL, getPackets} from "../constants/constants";
 import Header from "../Components/header";
-import {useSelector} from "react-redux";
+import {useSelector, useDispatch} from "react-redux";
+import {
+    setPacketsPageAction,
+    addPacketAction,
+    setAverageSpeedAction,
+    setDevicesAction,
+    setInstantaneousSpeedAction,
+    setAnalyzedDataAction,
+    clearPacketsAction,
+    setTotalPacketsAction
+} from "../Store/Actions/packetsActions";
+import socketIO from 'socket.io-client';
 
 export default function Import() {
     const [file, setFile] = useState(null);
     const sniffer = useSelector(state => state.sniffer);
+    const packets = useSelector(state => state.packets);
+
+    const dispatch = useDispatch();
 
     const selectFile = (e) => {
         e.preventDefault();
@@ -39,7 +53,52 @@ export default function Import() {
                     body: formData
                 }).then(res => res.json())
                     .then(res => {
-                            console.log(res);
+                            if (res.status === 'success') {
+                                dispatch(clearPacketsAction());
+                                const newSocket = new socketIO(BaseURL);
+                                newSocket.emit('get_imported_data');
+                                newSocket.on('imported_data', (res) => {
+                                    console.log(res);
+                                    dispatch(setPacketsPageAction(0));
+                                    dispatch(clearPacketsAction());
+                                    dispatch(setTotalPacketsAction(res['TotalPackets']));
+                                    dispatch(setAverageSpeedAction(res['AvgSpeed']));
+                                    dispatch(setInstantaneousSpeedAction(res['InstantaneousSPEED']));
+                                    dispatch(setAnalyzedDataAction(res['AnalyzedData']));
+                                    dispatch(setDevicesAction(res['Devices']));
+                                    newSocket.disconnect();
+                                    const url = BaseURL + getPackets;
+                                    const body = {
+                                        "page": 0,
+                                        "size": packets.packetsPerPage
+                                    };
+                                    fetch(url,
+                                        {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/json'
+                                            },
+                                            body: JSON.stringify(body)
+                                        }).then(
+                                        response => {
+                                            if (response.status === 200) {
+                                                response.json().then(res => {
+                                                    if (res.status === 'success') {
+                                                        const newSocket = new socketIO(BaseURL);
+                                                        newSocket.emit('get_pagination_packets');
+                                                        newSocket.on('pagination_packets', (res) => {
+                                                            console.log(res);
+                                                            dispatch(clearPacketsAction());
+                                                            dispatch(addPacketAction(res['PaginationPackets']))
+                                                            newSocket.disconnect();
+                                                        });
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    );
+                                });
+                            }
                         }
                     );
             } else

@@ -17,21 +17,9 @@ export default function Header(props) {
         if (sniffer.socket !== null) {
             sniffer.socket.on("packet", async (res) => {
                 var data = JSON.parse(res.data);
-                var newPackets = [];
-                data.forEach((item, index) => {
-                    newPackets.push({
-                        id: packets.packets.length + index,
-                        host: item['Ethernet']['src'],
-                        sourceip: item['IP'] ? item['IP']['src'] : item['IPv6'] ? item['IPv6']['src'] : "Unknown",
-                        destinationip: item['IP'] ? item['IP']['dst'] : item['IPv6'] ? item['IPv6']['dst'] : "Unknown",
-                        sourceport: item['TCP'] ? item['TCP']['sport'] : item['UDP'] ? item['UDP']['sport'] : item['ICMP'] ? item['ICMP']['type'] : "N/A",
-                        destinationport: item['TCP'] ? item['TCP']['dport'] : item['UDP'] ? item['UDP']['dport'] : item['ICMP'] ? item['ICMP']['type'] : "N/A",
-                        protocol: item['Frame_info']['Frame_protocols'] && item['Frame_info']['Frame_protocols'][3],
-                        packet: item
-                    });
-                });
+                dispatch(addPacketAction(data));
                 dispatch(setTotalPacketsAction(res['TotalPackets']));
-                dispatch(addPacketAction(newPackets));
+                dispatch(addPacketAction(data));
                 dispatch(setDevicesAction(res['Devices']));
                 dispatch(setInstantaneousSpeedAction(res['InstantaneousSPEED']));
                 dispatch(setAverageSpeedAction(res['AvgSpeed']));

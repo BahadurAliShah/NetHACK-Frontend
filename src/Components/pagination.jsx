@@ -1,8 +1,9 @@
 import React, {useEffect} from "react";
 import {ChevronLeftIcon, ChevronRightIcon} from '@heroicons/react/20/solid'
-import {useSelector, useDispatch} from "react-redux";
-import {setPacketsPageAction, addPacketAction, clearPacketsAction} from "../Store/Actions/packetsActions";
+import {useDispatch, useSelector} from "react-redux";
+import {addPacketAction, clearPacketsAction} from "../Store/Actions/packetsActions";
 import {BaseURL, getPackets} from "../constants/constants";
+import socketIO from 'socket.io-client';
 
 export default function Pagination() {
     const dispatch = useDispatch();
@@ -33,22 +34,15 @@ export default function Pagination() {
             response => {
                 if (response.status === 200) {
                     response.json().then(res => {
-                        dispatch(clearPacketsAction());
-                        let newPackets = [];
-                        res.data.forEach((item, index) => {
-                            newPackets.push({
-                                id: index,
-                                host: item['Ethernet']['src'],
-                                sourceip: item['IP'] ? item['IP']['src'] : item['IPv6'] ? item['IPv6']['src'] : "Unknown",
-                                destinationip: item['IP'] ? item['IP']['dst'] : item['IPv6'] ? item['IPv6']['dst'] : "Unknown",
-                                sourceport: item['TCP'] ? item['TCP']['sport'] : item['UDP'] ? item['UDP']['sport'] : item['ICMP'] ? item['ICMP']['type'] : "N/A",
-                                destinationport: item['TCP'] ? item['TCP']['dport'] : item['UDP'] ? item['UDP']['dport'] : item['ICMP'] ? item['ICMP']['type'] : "N/A",
-                                protocol: item['Frame_info']['Frame_protocols'] && item['Frame_info']['Frame_protocols'][3],
-                                packet: item
+                        if (res.status === 'success') {
+                            const newSocket = new socketIO(BaseURL);
+                            newSocket.emit('get_pagination_packets');
+                            newSocket.on('pagination_packets', (res) => {
+                                dispatch(clearPacketsAction());
+                                dispatch(addPacketAction(res['PaginationPackets']))
+                                newSocket.disconnect();
                             });
-                        });
-                        dispatch(addPacketAction(newPackets));
-                        dispatch(setPacketsPageAction(page));
+                        }
                     });
                 }
             }
@@ -81,7 +75,7 @@ export default function Pagination() {
                 <div>
                     <p className="text-sm text-gray-700">
                         Showing <span className="font-medium">{packets.packetsPerPage * packets.page}</span> to <span
-                        className="font-medium">{packets.packetsPerPage * packets.page + packets.packets.length}</span> of{' '}
+                        className="font-medium">{packets.packetsPerPage * packets.page + packets.packets.length - 1}</span> of{' '}
                         <span className="font-medium">{packets.totalPacketsCount}</span> results
                     </p>
                 </div>
@@ -127,7 +121,7 @@ export default function Pagination() {
                         }
                         <a
                             onClick={() => handlePageChange(packets.page + 1)}
-                            className={packets.page < Math.ceil(packets.totalPacketsCount / packets.packetsPerPage)-1 ?
+                            className={packets.page < Math.ceil(packets.totalPacketsCount / packets.packetsPerPage) - 1 ?
                                 "relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50" :
                                 "pointer-events-none relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
                             }
