@@ -7,14 +7,14 @@ import Sidebar from "./Components/sidebar";
 import Packets from "./Pages/packets";
 import Speed from "./Pages/speed";
 import Analyzer from "./Pages/analyzer";
-import {useDispatch, useSelector} from "react-redux";
-import {selectMenuItemAction, selectSubMenuItemAction} from "./Store/Actions/sidebarMenuActions";
+import Import from "./Pages/import";
+import Export from "./Pages/export";
 
 export default function App() {
     return (
         <React.StrictMode>
             <Router>
-                <Sidebar />
+                <Sidebar/>
                 <div className="ml-64">
                     <Routes>
                         <Route path="/" element={<Interfaces/>}/>
@@ -22,6 +22,8 @@ export default function App() {
                         <Route path={"/packets"} element={<Packets/>}/>
                         <Route path={"/speed"} element={<Speed/>}/>
                         <Route path={"/analyzer"} element={<Analyzer/>}/>
+                        <Route path={"/import"} element={<Import/>}/>
+                        <Route path={"/export"} element={<Export/>}/>
                         <Route path="*" element={<NotFound/>}/>
                     </Routes>
                 </div>
