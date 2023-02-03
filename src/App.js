@@ -9,6 +9,7 @@ import Speed from "./Pages/speed";
 import Analyzer from "./Pages/analyzer";
 import Import from "./Pages/import";
 import Export from "./Pages/export";
+import Topology from "./Pages/topology";
 
 export default function App() {
     return (
@@ -21,6 +22,7 @@ export default function App() {
                         <Route path={"/interfaces"} element={<Interfaces/>}/>
                         <Route path={"/packets"} element={<Packets/>}/>
                         <Route path={"/speed"} element={<Speed/>}/>
+                        <Route path={"/topology"} element={<Topology/>}/>
                         <Route path={"/analyzer"} element={<Analyzer/>}/>
                         <Route path={"/import"} element={<Import/>}/>
                         <Route path={"/export"} element={<Export/>}/>
