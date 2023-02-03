@@ -39,7 +39,7 @@ export default function Pagination() {
                             newSocket.emit('get_pagination_packets');
                             newSocket.on('pagination_packets', (res) => {
                                 dispatch(clearPacketsAction());
-                                dispatch(addPacketAction(res['PaginationPackets']))
+                                dispatch(addPacketAction(res['PaginationPackets'], 0))
                                 newSocket.disconnect();
                             });
                         }
