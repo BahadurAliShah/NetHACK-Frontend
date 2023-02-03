@@ -4,106 +4,13 @@ import Header from "../Components/header";
 
 const {useSelector} = require("react-redux");
 
-const directory = [
-    {
-        id: 1,
-        name: 'Leslie Abbott',
-        role: 'Co-Founder / CEO',
-        imageUrl:
-            'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    },
-    {
-        id: 2,
-        name: 'Hector Adams',
-        role: 'VP, Marketing',
-        imageUrl:
-            'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    },
-    {
-        id: 3,
-        name: 'Blake Alexander',
-        role: 'Account Coordinator',
-        imageUrl:
-            'https://images.unsplash.com/photo-1520785643438-5bf77931f493?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    },
-    {
-        id: 4,
-        name: 'Fabricio Andrews',
-        role: 'Senior Art Director',
-        imageUrl:
-            'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    },
-];
-
-const SampleData = [
-    {x: 0, y: null},
-    {x: 1, y: null},
-    {x: 2, y: null},
-    {x: 3, y: null},
-    {x: 4, y: null},
-    {x: 5, y: null},
-    {x: 6, y: null},
-    {x: 7, y: null},
-    {x: 8, y: null},
-    {x: 9, y: null},
-    {x: 10, y: null},
-    {x: 11, y: null},
-    {x: 12, y: null},
-    {x: 13, y: null},
-    {x: 14, y: null},
-    {x: 15, y: null},
-    {x: 16, y: null},
-    {x: 17, y: null},
-    {x: 18, y: null},
-    {x: 19, y: null},
-    {x: 20, y: null},
-    {x: 21, y: null},
-    {x: 22, y: null},
-    {x: 23, y: null},
-    {x: 24, y: null},
-    {x: 25, y: null},
-    {x: 26, y: null},
-    {x: 27, y: null},
-    {x: 28, y: null},
-    {x: 29, y: null},
-    {x: 30, y: null},
-    {x: 31, y: null},
-    {x: 32, y: null},
-    {x: 33, y: null},
-    {x: 34, y: null},
-    {x: 35, y: null},
-    {x: 36, y: null},
-    {x: 37, y: null},
-    {x: 38, y: null},
-    {x: 39, y: null},
-    {x: 40, y: null},
-    {x: 41, y: null},
-    {x: 42, y: null},
-    {x: 43, y: null},
-    {x: 44, y: null},
-    {x: 45, y: null},
-    {x: 46, y: null},
-    {x: 47, y: null},
-    {x: 48, y: null},
-    {x: 49, y: null},
-    {x: 50, y: null},
-    {x: 51, y: null},
-    {x: 52, y: null},
-    {x: 53, y: null},
-    {x: 54, y: null},
-    {x: 55, y: null},
-    {x: 56, y: null},
-    {x: 57, y: null},
-    {x: 58, y: null},
-    {x: 59, y: null},
-];
 
 const VictoryAreaChart = (props) => {
     return (<VictoryGroup
         width={props.width}
         height={props.height}
         padding={{top: 1, bottom: 0, left: 0, right: 0}}
-        maxDomain={{y: 10000}}
+        // maxDomain={{y: 10000}}
     >
         <VictoryArea
             data={props.data1}
