@@ -61,11 +61,11 @@ export default function Import() {
                                     console.log(res);
                                     dispatch(setPacketsPageAction(0));
                                     dispatch(clearPacketsAction());
+                                    dispatch(setDevicesAction(res['Devices']));
                                     dispatch(setTotalPacketsAction(res['TotalPackets']));
                                     dispatch(setAverageSpeedAction(res['AvgSpeed']));
                                     dispatch(setInstantaneousSpeedAction(res['InstantaneousSPEED']));
                                     dispatch(setAnalyzedDataAction(res['AnalyzedData']));
-                                    dispatch(setDevicesAction(res['Devices']));
                                     newSocket.disconnect();
                                     const url = BaseURL + getPackets;
                                     const body = {
@@ -89,8 +89,9 @@ export default function Import() {
                                                         newSocket.on('pagination_packets', (res) => {
                                                             console.log(res);
                                                             dispatch(clearPacketsAction());
-                                                            dispatch(addPacketAction(res['PaginationPackets']))
+                                                            dispatch(addPacketAction(res['PaginationPackets']), 0)
                                                             newSocket.disconnect();
+                                                            alert('File uploaded successfully');
                                                         });
                                                     }
                                                 });
