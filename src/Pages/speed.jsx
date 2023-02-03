@@ -82,6 +82,10 @@ const Speed = () => {
 
     useEffect(() => {
         handleResize();
+    }, [devices, instantaneousSpeed, averageSpeed]);
+
+    useEffect(() => {
+        handleResize();
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
     }, []);
