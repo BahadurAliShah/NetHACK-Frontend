@@ -1,8 +1,8 @@
 import React, {useEffect} from "react";
 import {ChevronLeftIcon, ChevronRightIcon} from '@heroicons/react/20/solid'
 import {useSelector, useDispatch} from "react-redux";
-import {setPacketsPageAction} from "../Store/Actions/packetsActions";
-
+import {setPacketsPageAction, addPacketAction, clearPacketsAction} from "../Store/Actions/packetsActions";
+import {BaseURL, getPackets} from "../constants/constants";
 
 export default function Pagination() {
     const dispatch = useDispatch();
@@ -17,7 +17,42 @@ export default function Pagination() {
     }, [packets.totalPacketsCount, packets.packetsPerPage]);
 
     const handlePageChange = (page) => {
-        dispatch(setPacketsPageAction(page));
+        const url = BaseURL + getPackets;
+        const body = {
+            "page": page,
+            "size": packets.packetsPerPage
+        };
+        fetch(url,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body)
+            }).then(
+            response => {
+                if (response.status === 200) {
+                    response.json().then(res => {
+                        dispatch(clearPacketsAction());
+                        let newPackets = [];
+                        res.data.forEach((item, index) => {
+                            newPackets.push({
+                                id: index,
+                                host: item['Ethernet']['src'],
+                                sourceip: item['IP'] ? item['IP']['src'] : item['IPv6'] ? item['IPv6']['src'] : "Unknown",
+                                destinationip: item['IP'] ? item['IP']['dst'] : item['IPv6'] ? item['IPv6']['dst'] : "Unknown",
+                                sourceport: item['TCP'] ? item['TCP']['sport'] : item['UDP'] ? item['UDP']['sport'] : item['ICMP'] ? item['ICMP']['type'] : "N/A",
+                                destinationport: item['TCP'] ? item['TCP']['dport'] : item['UDP'] ? item['UDP']['dport'] : item['ICMP'] ? item['ICMP']['type'] : "N/A",
+                                protocol: item['Frame_info']['Frame_protocols'] && item['Frame_info']['Frame_protocols'][3],
+                                packet: item
+                            });
+                        });
+                        dispatch(addPacketAction(newPackets));
+                        dispatch(setPacketsPageAction(page));
+                    });
+                }
+            }
+        );
     }
 
     return (
