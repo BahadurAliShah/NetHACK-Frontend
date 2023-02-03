@@ -93,8 +93,8 @@ const Speed = () => {
             </div>
 
             <div className="flex flex-row h-full">
-                <div className="overflow-y-auto" style={{height: '535px'}}>
-                    <nav className="border-r-2 border-gray-200" aria-label="Directory">
+                <div className="overflow-y-auto border-r-2 border-gray-200" style={{height: '535px'}}>
+                    <nav className="" aria-label="Directory">
                         <ul role="list" className="relative z-0 divide-y divide-gray-200">
                             {devices.map((device, index) => (
                                 <li key={device["Mac Address"] + "ListOfDevices"} className="bg-white"
