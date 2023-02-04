@@ -1,11 +1,11 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import Graph from "react-graph-vis";
 import {useSelector} from "react-redux";
 import Header from "../Components/header";
 
 function RelationGraph1() {
     const devices = useSelector(state => state.packets.devices);
-    const nodes = devices.map((device) => {
+    const nodes =  devices.map((device) => {
         return {
             id: device['Mac Address'],
             label: device['IP Address'],
@@ -17,6 +17,10 @@ function RelationGraph1() {
             from: device['Mac Address'],
             to: device['Connected to'][0]
         }
+    });
+    const [graph, setGraph] = useState({
+        nodes: nodes,
+        edges: edges
     });
 
     const options = {
@@ -57,12 +61,9 @@ function RelationGraph1() {
 
     return (
         <Graph
-            graph={{
-                nodes: nodes,
-                edges: edges
-            }}
+            graph={graph}
             options={options}
-            style={{height: "600px"}}
+            style={{ height: "600px" }}
         />
     );
 }
@@ -75,7 +76,7 @@ export default function Topology() {
                 <Header pageTitle={"Network Topology"}/>
             </div>
             <div>
-                <RelationGraph1/>
+                <RelationGraph1 />
             </div>
         </div>
     );
