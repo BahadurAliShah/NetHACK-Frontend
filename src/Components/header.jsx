@@ -3,7 +3,15 @@ import {useSelector, useDispatch} from 'react-redux'
 import {startSniffingAction, stopSniffingAction} from "../Store/Actions/snifferActions";
 import {BaseURL} from "../constants/constants";
 import socketIO from 'socket.io-client';
-import { setTotalPacketsAction ,addPacketAction, setAverageSpeedAction, setDevicesAction, setInstantaneousSpeedAction, setAnalyzedDataAction } from "../Store/Actions/packetsActions";
+import {
+    setTotalPacketsAction,
+    addPacketAction,
+    setAverageSpeedAction,
+    setDevicesAction,
+    setInstantaneousSpeedAction,
+    setAnalyzedDataAction,
+    clearPacketsAction, setPacketsPageAction
+} from "../Store/Actions/packetsActions";
 
 
 export default function Header(props) {
@@ -17,7 +25,7 @@ export default function Header(props) {
         if (sniffer.socket !== null) {
             sniffer.socket.on("packet", async (res) => {
                 var data = JSON.parse(res.data);
-                // console.log(data);
+                console.log(data);
                 dispatch(setTotalPacketsAction(res['TotalPackets']));
                 dispatch(addPacketAction(data, packets.packets.length));
                 dispatch(setDevicesAction(res['Devices']));
@@ -40,20 +48,33 @@ export default function Header(props) {
                 alert("Please Select an Interface First");
                 return;
             }
-            const tempSocket = socketIO(BaseURL);
-            tempSocket.on("connect", () => {
-                console.log("Socket Connected");
-                tempSocket.emit("start_sniffing", {"interface": currentInterface[0].name});
-            });
-            tempSocket.on("sniffing", (data) => {
-                console.log("Sniffing: ", data);
-                if (data["status"] === "success") {
-                    dispatch(startSniffingAction(data["interface"], tempSocket));
-                } else {
-                    console.log("Error Sniffing: ", data["error"]);
-                }
-            });
-
+            let continueSniffing = true;
+            if (packets.totalPacketsCount > 0){
+                // eslint-disable-next-line no-restricted-globals
+                continueSniffing = confirm("Warning Previous Data Will Be Lost If You Start Sniffing. Please Save Your Data First");
+            }
+            if (continueSniffing) {
+                const tempSocket = socketIO(BaseURL);
+                tempSocket.on("connect", () => {
+                    console.log("Socket Connected");
+                    tempSocket.emit("start_sniffing", {"interface": currentInterface[0].name});
+                });
+                tempSocket.on("sniffing", (data) => {
+                    console.log("Sniffing: ", data);
+                    if (data["status"] === "success") {
+                        dispatch(clearPacketsAction());
+                        dispatch(setTotalPacketsAction(0));
+                        dispatch(setDevicesAction([]));
+                        dispatch(setInstantaneousSpeedAction([]));
+                        dispatch(setAverageSpeedAction([]));
+                        dispatch(setAnalyzedDataAction([]));
+                        dispatch(setPacketsPageAction(0));
+                        dispatch(startSniffingAction(data["interface"], tempSocket));
+                    } else {
+                        console.log("Error Sniffing: ", data["error"]);
+                    }
+                });
+            }
         } else {
             sniffer.socket.emit("stop_sniffing");
             sniffer.socket.on("stoped_sniffing", (data) => {
