@@ -268,7 +268,7 @@ export default function Packets(props) {
             {/*<div className="w-full overflow-y-auto" style={{height: "calc(73vh)"}}>*/}
             <Table title={"Packets"} tableDetail={"List of the captured Packets."} data={packets}
                    header={["HOST", "SourceIP", "DestinationIP", "Protocol", "SourcePort", "DestinationPort"]}
-                   selectorFunction={openPacket} selectButtonText={"Open"} rowsPerPage={true} />
+                   selectorFunction={openPacket} selectButtonText={"Open"} rowsPerPage={true} handleChange={handlePageChange}/>
             {/*</div>*/}
             <Pagination currentPage={currentPage} totalCount={totalPacketsCount} rowsPerPage={packetsPerPage} currentLength={packets.length} handlePageChange={handlePageChange} />
         </div>

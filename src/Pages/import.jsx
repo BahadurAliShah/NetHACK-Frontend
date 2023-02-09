@@ -10,7 +10,11 @@ import {
     setInstantaneousSpeedAction,
     setAnalyzedDataAction,
     clearPacketsAction,
-    setTotalPacketsAction
+    setTotalPacketsAction,
+    addWarningAction,
+    clearWarningsAction,
+    setTotalWarningsAction,
+    setWarningsPageAction
 } from "../Store/Actions/packetsActions";
 import socketIO from 'socket.io-client';
 
@@ -60,12 +64,16 @@ export default function Import() {
                                 newSocket.on('imported_data', (res) => {
                                     console.log(res);
                                     dispatch(setPacketsPageAction(0));
+                                    dispatch(setWarningsPageAction(0));
                                     dispatch(clearPacketsAction());
+                                    dispatch(clearWarningsAction());
+                                    dispatch(setTotalWarningsAction(res['Warnings'].length));
                                     dispatch(setDevicesAction(res['Devices']));
                                     dispatch(setTotalPacketsAction(res['TotalPackets']));
                                     dispatch(setAverageSpeedAction(res['AvgSpeed']));
                                     dispatch(setInstantaneousSpeedAction(res['InstantaneousSPEED']));
                                     dispatch(setAnalyzedDataAction(res['AnalyzedData']));
+                                    dispatch(addWarningAction(res['Warnings'], 0));
                                     newSocket.disconnect();
                                     const url = BaseURL + getPackets;
                                     const body = {

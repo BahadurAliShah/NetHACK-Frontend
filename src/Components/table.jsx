@@ -11,7 +11,13 @@ function classNames(...classes) {
 
 const RowsPerPage = (props) => {
     const dispatch = useDispatch();
-    const rowsPerPage = useSelector(state => state.packets.rowsPerPage);
+    const packets = useSelector(state => state.packets);
+
+    const handleRowsPerPage = async (e) => {
+        dispatch(setPacketsPerPageAction(e));
+        await props.handleChange(packets.page)
+    }
+
     const rowsPerPageOptions = [100, 200, 300, 400, 500];
     return (<>
             <Menu as="div" className="relative inline-block text-left">
@@ -38,7 +44,7 @@ const RowsPerPage = (props) => {
                                 key={"RowsPerPageOption" + option}>
                                 {({ active }) => (
                                     <a
-                                        onClick={() => dispatch(setPacketsPerPageAction(option))}
+                                        onClick={() => handleRowsPerPage(option)}
                                         className={classNames(
                                             active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
                                             'block px-4 py-2 text-sm'
@@ -68,7 +74,7 @@ export default function Table(props) {
                     </p>
                 </div>
                 {props.rowsPerPage &&
-                    <RowsPerPage/>
+                    <RowsPerPage handleChange={props.handleChange} />
                 }
             </div>
             <div className="-mx-4 mt-10 ring-1 ring-gray-300 sm:-mx-6 md:mx-0 md:rounded-lg">
