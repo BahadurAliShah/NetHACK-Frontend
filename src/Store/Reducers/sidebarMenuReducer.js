@@ -7,7 +7,8 @@ import {
     FunnelIcon,
     ComputerDesktopIcon,
     PuzzlePieceIcon,
-    WifiIcon
+    WifiIcon,
+    ExclamationTriangleIcon
 } from "@heroicons/react/24/outline";
 
 const initialState = [
@@ -19,6 +20,7 @@ const initialState = [
     {name: 'Speed', href: '/speed', icon: ClockIcon, current: false},
     {name: 'Network Topology', href: '/topology', icon: ComputerDesktopIcon, current: false},
     {name: 'Analyzer', href: '/analyzer', icon: PuzzlePieceIcon, current: false},
+    {name: 'Warnings', href: '/warnings', icon: ExclamationTriangleIcon, current: false},
     {name: 'Import PCAP', href: '/import', icon: ArrowDownTrayIcon, current: false},
     {name: 'Export PCAP', href: '/export', icon: ArrowUpTrayIcon, current: false}
 ]

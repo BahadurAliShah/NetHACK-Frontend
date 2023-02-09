@@ -1,4 +1,19 @@
-import {setPacketsPerPage, setTotalPackets, addPacket, clearPackets, setPacketsPage, setDevices, setInstantaneousSpeed, setAverageSpeed, setAnalyzedData} from "../ActionTypes/actionTypes";
+import {
+    setPacketsPerPage,
+    setTotalPackets,
+    addPacket,
+    clearPackets,
+    setPacketsPage,
+    setDevices,
+    setInstantaneousSpeed,
+    setAverageSpeed,
+    setAnalyzedData,
+    setWarningsPerPage,
+    setTotalWarnings,
+    addWarning,
+    clearWarnings,
+    setWarningsPage
+} from "../ActionTypes/actionTypes";
 
 export const setPacketsPerPageAction = (noOfPackets) => {
     return {
@@ -72,5 +87,46 @@ export const setAnalyzedDataAction = (data) => {
     return {
         type: setAnalyzedData,
         analyzedData: data
+    }
+}
+
+export const setWarningsPerPageAction = (noOfWarnings) => {
+    return {
+        type: setWarningsPerPage,
+        warningsPerPage: noOfWarnings
+    }
+}
+
+export const setTotalWarningsAction = (totalWarnings) => {
+    return {
+        type: setTotalWarnings,
+        totalWarnings: totalWarnings
+    }
+}
+
+export const addWarningAction = (warnings, startIndex) => {
+    let newWarnings = [];
+    warnings.forEach((item, index) => {
+        newWarnings.push({
+            id: startIndex + index,
+            description: item
+        });
+    });
+    return {
+        type: addWarning,
+        warnings: newWarnings
+    }
+}
+
+export const clearWarningsAction = () => {
+    return {
+        type: clearWarnings
+    }
+}
+
+export const setWarningsPageAction = (page) => {
+    return {
+        type: setWarningsPage,
+        page: page
     }
 }

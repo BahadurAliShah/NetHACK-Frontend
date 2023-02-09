@@ -20,5 +20,11 @@ export const setInstantaneousSpeed = 'SET_INSTANTANEOUS_SPEED';
 export const setAverageSpeed = 'SET_AVERAGE_SPEED';
 export const setAnalyzedData = 'SET_ANALYZED_DATA';
 
+export const setWarningsPerPage = 'SET_WARNINGS_PER_PAGE';
+export const setTotalWarnings = 'SET_TOTAL_WARNINGS';
+export const addWarning = 'ADD_WARNING';
+export const clearWarnings = 'CLEAR_WARNINGS';
+export const setWarningsPage = 'WARNINGS_PAGE';
+
 
 

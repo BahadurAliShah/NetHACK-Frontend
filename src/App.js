@@ -10,6 +10,7 @@ import Analyzer from "./Pages/analyzer";
 import Import from "./Pages/import";
 import Export from "./Pages/export";
 import Topology from "./Pages/topology";
+import Warnings from "./Pages/warnings";
 
 export default function App() {
     return (
@@ -24,6 +25,7 @@ export default function App() {
                         <Route path={"/speed"} element={<Speed/>}/>
                         <Route path={"/topology"} element={<Topology/>}/>
                         <Route path={"/analyzer"} element={<Analyzer/>}/>
+                        <Route path={"/warnings"} element={<Warnings/>}/>
                         <Route path={"/import"} element={<Import/>}/>
                         <Route path={"/export"} element={<Export/>}/>
                         <Route path="*" element={<NotFound/>}/>

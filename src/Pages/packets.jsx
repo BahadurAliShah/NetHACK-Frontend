@@ -22,10 +22,51 @@ export default function Packets(props) {
     const navigation = useSelector(state => state.navigation);
     const filters = useSelector(state => state.filters);
     const packets = useSelector(state => state.packets.packets);
+    const currentPage = useSelector(state => state.packets.page);
+    const totalPacketsCount = useSelector(state => state.packets.totalPacketsCount);
     const packetsPerPage = useSelector(state => state.packets.packetsPerPage);
     const dispatch = useDispatch();
 
     const slider = navigation[1]['subNavigation'][0].current;
+
+    const handlePageChange = (page) => {
+        const url = BaseURL + getPackets;
+        const body = {
+            "page": page,
+            "size": packetsPerPage,
+        };
+        fetch(url,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body)
+            }).then(
+            response => {
+                if (response.status === 200) {
+                    response.json().then(res => {
+                        if (res.status === 'success') {
+                            const newSocket = new socketIO(BaseURL);
+                            newSocket.emit('get_pagination_packets');
+                            newSocket.on('pagination_packets', (res) => {
+                                dispatch(clearPacketsAction());
+                                dispatch(addPacketAction(res['PaginationPackets'], 0))
+                                dispatch(setPacketsPageAction(page));
+                                newSocket.disconnect();
+                            });
+                        }
+                        else {
+                            console.log(res);
+                        }
+                    });
+                }
+                else {
+                    console.log('error', response);
+                }
+            }
+        );
+    }
 
 
     const setFilters = (filters) => {
@@ -62,7 +103,6 @@ export default function Packets(props) {
                                 const newSocket = new socketIO(BaseURL);
                                 newSocket.emit('get_pagination_packets');
                                 newSocket.on('pagination_packets', (res) => {
-                                    console.log("------------------", res);
                                     dispatch(clearPacketsAction());
                                     dispatch(addPacketAction(res['PaginationPackets'], 0));
                                     newSocket.disconnect();
@@ -225,12 +265,12 @@ export default function Packets(props) {
                     </button>
                 </div>
             </SlideOver>
-
+            {/*<div className="w-full overflow-y-auto" style={{height: "calc(73vh)"}}>*/}
             <Table title={"Packets"} tableDetail={"List of the captured Packets."} data={packets}
                    header={["HOST", "SourceIP", "DestinationIP", "Protocol", "SourcePort", "DestinationPort"]}
                    selectorFunction={openPacket} selectButtonText={"Open"} rowsPerPage={true} />
-
-            <Pagination />
+            {/*</div>*/}
+            <Pagination currentPage={currentPage} totalCount={totalPacketsCount} rowsPerPage={packetsPerPage} currentLength={packets.length} handlePageChange={handlePageChange} />
         </div>
     )
 }

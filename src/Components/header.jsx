@@ -10,7 +10,12 @@ import {
     setDevicesAction,
     setInstantaneousSpeedAction,
     setAnalyzedDataAction,
-    clearPacketsAction, setPacketsPageAction
+    clearPacketsAction,
+    setPacketsPageAction,
+    setTotalWarningsAction,
+    addWarningAction,
+    clearWarningsAction,
+    setWarningsPageAction
 } from "../Store/Actions/packetsActions";
 
 
@@ -25,13 +30,14 @@ export default function Header(props) {
         if (sniffer.socket !== null) {
             sniffer.socket.on("packet", async (res) => {
                 var data = JSON.parse(res.data);
-                console.log(data);
                 dispatch(setTotalPacketsAction(res['TotalPackets']));
                 dispatch(addPacketAction(data, packets.packets.length));
                 dispatch(setDevicesAction(res['Devices']));
                 dispatch(setInstantaneousSpeedAction(res['InstantaneousSPEED']));
                 dispatch(setAverageSpeedAction(res['AvgSpeed']));
                 dispatch(setAnalyzedDataAction(res['AnalyzedData']));
+                dispatch(addWarningAction(res['Alerts'], packets.warnings.length));
+                dispatch(setTotalWarningsAction(packets.warnings.length + res['Alerts'].length));
             });
             sniffer.socket.on("disconnect", () => {
                 console.log("Socket Disconnected");
@@ -42,14 +48,14 @@ export default function Header(props) {
 
 
     const handleSniffingAction = () => {
-        if (sniffer.isSniffing == false) {
+        if (sniffer.isSniffing === false) {
             const currentInterface = interfaces.filter(item => item.isCurrent === true);
             if (currentInterface.length === 0) {
                 alert("Please Select an Interface First");
                 return;
             }
             let continueSniffing = true;
-            if (packets.totalPacketsCount > 0){
+            if (packets.totalPacketsCount > 0) {
                 // eslint-disable-next-line no-restricted-globals
                 continueSniffing = confirm("Warning Previous Data Will Be Lost If You Start Sniffing. Please Save Your Data First");
             }
@@ -63,12 +69,15 @@ export default function Header(props) {
                     console.log("Sniffing: ", data);
                     if (data["status"] === "success") {
                         dispatch(clearPacketsAction());
+                        dispatch(clearWarningsAction());
                         dispatch(setTotalPacketsAction(0));
+                        dispatch(setTotalWarningsAction(0));
                         dispatch(setDevicesAction([]));
                         dispatch(setInstantaneousSpeedAction([]));
                         dispatch(setAverageSpeedAction([]));
                         dispatch(setAnalyzedDataAction([]));
                         dispatch(setPacketsPageAction(0));
+                        dispatch(setWarningsPageAction(0));
                         dispatch(startSniffingAction(data["interface"], tempSocket));
                     } else {
                         console.log("Error Sniffing: ", data["error"]);

@@ -7,7 +7,12 @@ import {
     setDevices,
     setInstantaneousSpeed,
     setAverageSpeed,
-    setAnalyzedData
+    setAnalyzedData,
+    setWarningsPerPage,
+    setTotalWarnings,
+    addWarning,
+    clearWarnings,
+    setWarningsPage
 } from "../ActionTypes/actionTypes";
 
 const initialState = {
@@ -18,7 +23,11 @@ const initialState = {
     devices: [],
     instantaneousSpeed: [],
     averageSpeed: [],
-    analyzedData: []
+    analyzedData: [],
+    warnings: [],
+    warningsPage: 0,
+    totalWarningsCount: 0,
+    warningsPerPage: 200
 }
 
 const addData = (data, newValue) => {
@@ -142,6 +151,23 @@ export const packetsReducer = (state = initialState, action) => {
             return {...state, averageSpeed: action.averageSpeed};
         case setAnalyzedData:
             return {...state, analyzedData: action.analyzedData};
+        case setWarningsPerPage:
+            return {...state, warningsPerPage: action.warningsPerPage};
+        case setTotalWarnings:
+            return {...state, totalWarningsCount: action.totalWarnings};
+        case addWarning:
+            if (state.warnings.length === state.warningsPerPage) {
+                return state;
+            }
+            let tempWarnings = [...state.warnings, ...action.warnings];
+            if (tempWarnings.length > state.warningsPerPage) {
+                tempWarnings.splice(-1 * (tempWarnings.length - state.warningsPerPage), tempWarnings.length - state.warningsPerPage);
+            }
+            return {...state, warnings: [...tempWarnings]};
+        case clearWarnings:
+            return {...state, warnings: []};
+        case setWarningsPage:
+            return {...state, warningsPage: action.page};
         default:
             return state;
     }
